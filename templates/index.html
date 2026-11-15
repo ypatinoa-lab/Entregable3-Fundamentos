@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - Ferretería</title>
+    <!-- Usamos Bootstrap para un diseño profesional -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Sistema de Inventario - Ferretería</h2>
+
+    <!-- Formulario para ingresar datos -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Registrar Nuevo Producto</h5>
+        </div>
+        <div class="card-body">
+            <form action="/agregar" method="POST" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Nombre del Producto</label>
+                    <input type="text" class="form-control" name="nombre" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Cantidad</label>
+                    <input type="number" class="form-control" name="cantidad" required min="0">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Precio Base ($)</label>
+                    <input type="number" step="0.01" class="form-control" name="precio" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Fecha de Compra</label>
+                    <input type="date" class="form-control" name="fecha_compra" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Fecha de Venta</label>
+                    <input type="date" class="form-control" name="fecha_venta">
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-success">Guardar Producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Visualización de datos en filas -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Almacén Actual</h5>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Precio Base</th>
+                        <th>IVA (19%)</th>
+                        <th>Precio Total</th>
+                        <th>Fecha Compra</th>
+                        <th>Fecha Venta</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in productos %}
+                    <tr>
+                        <td>{{ p.id }}</td>
+                        <td><strong>{{ p.nombre }}</strong></td>
+                        <td>{{ p.cantidad }}</td>
+                        <td>${{ "%.2f"|format(p.precio) }}</td>
+                        <td>${{ "%.2f"|format(p.iva) }}</td>
+                        <td class="text-primary fw-bold">${{ "%.2f"|format(p.precio_total) }}</td>
+                        <td>{{ p.fecha_compra }}</td>
+                        <td>{{ p.fecha_venta }}</td>
+                        <td>
+                            {% if p.agotado %}
+                                <span class="badge bg-danger">AGOTADO</span>
+                            {% else %}
+                                <span class="badge bg-success">En Stock</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if not productos %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">No hay productos en el inventario.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
